@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>今天吃什么</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/embed.css">
+    <script src="./js/jquery-3.4.1.min.js"></script>
+    <script src="./js/embed.js"></script>
+</head>
+
+<body class="embed-page">
+    <div class="embed-widget">
+        <h2 class="embed-title">今天吃什么</h2>
+        <div class="embed-display">
+            <span class="embed-food" id="embedFood">点开始，帮你决定！</span>
+        </div>
+        <div class="embed-actions">
+            <button id="embedStart" class="embed-btn" type="button">开始</button>
+        </div>
+        <div class="embed-recipe" id="embedRecipe" hidden>
+            <a id="embedRecipeLink" class="embed-recipe-link" href="#" target="_blank" rel="noopener">查看菜谱 ›</a>
+        </div>
+        <div class="embed-modes" id="embedModes">
+            <span class="embed-mode selected" data-type="human">正常人类</span>
+            <span class="embed-mode" data-type="monster">非正常人类</span>
+            <span class="embed-mode" data-type="oasis">oasis</span>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -39,12 +39,12 @@ whattoeat/
 version: '3.8'
 
 services:
-  whattoeat:
+  WhatToEat:
     image: nginx:alpine
-    container_name: whattoeat
+    container_name: WhatToEat
     restart: always
     ports:
-      - "8080:80"
+      - "3901:80"
     volumes:
       - ./app:/usr/share/nginx/html
 ```
