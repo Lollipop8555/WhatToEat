@@ -16,19 +16,35 @@
 
 <body>
     <div class="bg"></div>
+    <button id="allRecipesBtn" class="all-recipes-btn" type="button">菜谱</button>
     <div id="temp_container"></div>
     <div id="wrapper">
-        <h1 class="title"><span class="today">今天</span><span class="time">午饭</span><span class="eat">吃</span></span><b
-                class="what">神马</b><span class="punctuation">？</span></h1>
+        <h1 class="title">
+            <span class="greeting">中午好</span>
+            <span class="line2">吃点<b class="what">神马</b><span class="punctuation">？</span></span>
+        </h1>
         <span id="start"><span>开始</span></span>
         <p class="os"></p>
-        <span class="tip">点击可以切换饭点~</span> <br>
+        <button id="recipeBtn" type="button">查看菜谱</button>
+        <span class="tip">点击可以切换问候~</span> <br>
     </div>
     <div id="toggle">
         <span data-type="human" data-color="#00BDD6" class="selected">正常人类</span>
         <span data-type="monster" data-color="#E80773">非正常人类</span>
         <span data-type="oasis" data-color="#26A540">oasis</span>
         <div id="colorBlock" class="hb"></div>
+    </div>
+
+    <div id="recipeListOverlay" class="recipe-list-overlay">
+        <div class="recipe-list-panel">
+            <div class="recipe-list-header">
+                <input id="recipeSearch" class="recipe-search" type="search" placeholder="搜索菜谱…" autocomplete="off">
+                <button id="recipeListClose" class="recipe-list-close" type="button" aria-label="关闭">×</button>
+            </div>
+            <div id="recipeListBody" class="recipe-list-body">
+                <p class="recipe-list-loading">加载中…</p>
+            </div>
+        </div>
     </div>
 </body>
 

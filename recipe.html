@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>菜谱</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="./css/style.min.css">
+    <script src="./js/marked.min.js"></script>
+    <script src="./js/mermaid.min.js"></script>
+    <script src="./js/html-to-image.min.js"></script>
+</head>
+
+<body class="recipe-page">
+    <header class="recipe-header">
+        <a class="recipe-back" href="index.html"><span class="recipe-back-arrow">‹</span>返回</a>
+        <h1 class="recipe-title"></h1>
+        <button class="recipe-save" id="recipeSave" type="button">保存图片</button>
+    </header>
+    <main id="recipeContent" class="recipe-content markdown-body">
+        <p>加载中…</p>
+    </main>
+
+    <script>
+        (function () {
+            var params = new URLSearchParams(location.search);
+            var name = params.get("name") || "菜谱";
+            var path = params.get("path");
+            document.querySelector(".recipe-title").textContent = name;
+
+            var saveBtn = document.getElementById("recipeSave");
+            if (saveBtn) {
+                saveBtn.addEventListener("click", function () {
+                    if (typeof window.htmlToImage === "undefined") {
+                        alert("图片生成库未加载，请确认 js/html-to-image.min.js 存在");
+                        return;
+                    }
+                    var src = document.getElementById("recipeContent");
+                    var width = src.clientWidth || 800;
+
+                    // 克隆到屏幕外容器，去掉居中/最大宽度/滚动限制，撑开完整高度再截图，
+                    // 避免左侧留白与长图被截断
+                    var clone = src.cloneNode(true);
+                    clone.style.width = width + "px";
+                    clone.style.maxWidth = "none";
+                    clone.style.margin = "0";
+                    clone.style.padding = "16px";
+                    clone.style.boxSizing = "border-box";
+                    clone.style.overflow = "visible";
+                    clone.style.height = "auto";
+                    clone.style.maxHeight = "none";
+
+                    var holder = document.createElement("div");
+                    holder.style.position = "fixed";
+                    holder.style.left = "-10000px";
+                    holder.style.top = "0";
+                    holder.style.width = width + "px";
+                    holder.style.background = "#ffffff";
+                    holder.style.overflow = "visible";
+                    holder.style.zIndex = "-1";
+                    holder.appendChild(clone);
+                    document.body.appendChild(holder);
+
+                    saveBtn.disabled = true;
+                    var oldText = saveBtn.textContent;
+                    saveBtn.textContent = "生成中…";
+
+                    window.htmlToImage.toPng(clone, {
+                        backgroundColor: "#ffffff",
+                        pixelRatio: 2,
+                        cacheBust: true,
+                        width: width,
+                        height: clone.offsetHeight
+                    }).then(function (dataUrl) {
+                        var link = document.createElement("a");
+                        link.download = (name || "菜谱") + ".png";
+                        link.href = dataUrl;
+                        link.click();
+                    }).catch(function (err) {
+                        console.error("生成图片失败:", err);
+                        alert("生成图片失败：" + err);
+                    }).finally(function () {
+                        if (holder.parentNode) holder.parentNode.removeChild(holder);
+                        saveBtn.disabled = false;
+                        saveBtn.textContent = oldText;
+                    });
+                });
+            }
+
+            var container = document.getElementById("recipeContent");
+
+            if (!path) {
+                container.innerHTML = "<p>缺少菜谱路径</p>";
+                return;
+            }
+
+            if (typeof window.marked === "undefined") {
+                container.innerHTML = "<p>渲染器加载失败（marked 未加载）</p>";
+                return;
+            }
+
+            function renderMermaid() {
+                if (typeof window.mermaid === "undefined") return;
+                try {
+                    mermaid.initialize({ startOnLoad: false, securityLevel: "loose", theme: "neutral" });
+                    var blocks = container.querySelectorAll("pre code.language-mermaid");
+                    Array.prototype.forEach.call(blocks, function (el) {
+                        var code = el.textContent;
+                        // mermaid 词法分析器不接受未加引号的 []/() 标签里的特殊字符
+                        // （如中文全角逗号、℃ 等），这里统一包上引号以兼容
+                        code = code
+                            .replace(/\[([^\]"\n]+)\]/g, '["$1"]')
+                            .replace(/\(([^\)"\n]+)\)/g, '("$1")');
+                        var div = document.createElement("div");
+                        div.className = "mermaid";
+                        div.textContent = code;
+                        if (el.parentNode) el.parentNode.replaceWith(div);
+                    });
+                    var charts = container.querySelectorAll(".mermaid");
+                    if (!charts.length) return;
+                    try {
+                        if (typeof mermaid.run === "function") {
+                            mermaid.run({ nodes: Array.prototype.slice.call(charts) });
+                        } else {
+                            mermaid.init(undefined, charts);
+                        }
+                    } catch (initErr) {
+                        console.error("mermaid 渲染调用失败:", initErr);
+                    }
+                } catch (err) {
+                    console.error("mermaid 渲染失败:", err);
+                }
+            }
+
+            fetch(path)
+                .then(function (r) {
+                    if (!r.ok) throw new Error("HTTP " + r.status);
+                    return r.text();
+                })
+                .then(function (md) {
+                    var html = window.marked.parse(md);
+                    // 将菜谱中的相对图片/链接改写为基于菜谱目录的绝对地址（零改路径）
+                    var dir = path.substring(0, path.lastIndexOf("/") + 1);
+                    var base = new URL(dir, location.href).href;
+                    html = html.replace(/(src|href)="([^"]*)"/g, function (m, attr, val) {
+                        if (/^(https?:|data:|#|\/)/.test(val)) return m;
+                        try {
+                            return attr + '="' + new URL(val, base).href + '"';
+                        } catch (e) {
+                            return m;
+                        }
+                    });
+                    container.innerHTML = html;
+                    renderMermaid();
+                })
+                .catch(function (e) {
+                    container.innerHTML =
+                        "<p>菜谱加载失败：" + e + "</p>" +
+                        "<p>请通过本地服务器访问本页（例如 <code>python3 -m http.server</code>），" +
+                        "不要用 <code>file://</code> 直接打开。</p>";
+                });
+        })();
+    </script>
+</body>
+
+</html>
