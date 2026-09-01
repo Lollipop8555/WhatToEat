@@ -5,10 +5,11 @@
     var foodPools = {};
     var currentFoodItem = null;
 
-    var $food = $("#embedFood");
-    var $start = $("#embedStart");
-    var $recipe = $("#embedRecipe");
-    var $link = $("#embedRecipeLink");
+    var foodEl = document.getElementById("embedFood");
+    var startEl = document.getElementById("embedStart");
+    var recipeEl = document.getElementById("embedRecipe");
+    var linkEl = document.getElementById("embedRecipeLink");
+    var modesEl = document.getElementById("embedModes");
 
     function loadPool(mode, cb) {
         if (foodPools[mode]) {
@@ -34,15 +35,15 @@
 
     function startSpin() {
         isPlaying = true;
-        $start.text("停");
-        $recipe.prop("hidden", true);
+        startEl.textContent = "停";
+        recipeEl.hidden = true;
         loadPool(currentMode, function (pool) {
             if (!pool.length) {
-                $food.text("暂无数据");
+                foodEl.textContent = "暂无数据";
                 return;
             }
             (function tick() {
-                $food.text(pickName(pool));
+                foodEl.textContent = pickName(pool);
                 spinTimeout = setTimeout(tick, 60);
             })();
         });
@@ -51,41 +52,45 @@
     function stopSpin() {
         isPlaying = false;
         clearTimeout(spinTimeout);
-        $start.text("换一个");
+        startEl.textContent = "换一个";
         loadPool(currentMode, function (pool) {
             if (!pool.length) return;
             var item = pool[Math.floor(Math.random() * pool.length)];
             currentFoodItem = item;
             var name = typeof item === "string" ? item : item.name;
-            $food.text(name);
+            foodEl.textContent = name;
             if (typeof item === "object" && item.recipe) {
-                $link.attr("href",
-                    "recipe.html?name=" + encodeURIComponent(name) +
-                    "&path=" + encodeURIComponent(item.recipe));
-                $recipe.prop("hidden", false);
+                linkEl.href = "recipe.html?name=" + encodeURIComponent(name) +
+                    "&path=" + encodeURIComponent(item.recipe);
+                recipeEl.hidden = false;
             } else {
-                $recipe.prop("hidden", true);
+                recipeEl.hidden = true;
             }
         });
     }
 
-    $start.on("click", function () {
+    startEl.addEventListener("click", function () {
         if (isPlaying) stopSpin();
         else startSpin();
     });
 
-    $("#embedModes").on("click", ".embed-mode", function () {
-        $(this).addClass("selected").siblings().removeClass("selected");
-        currentMode = $(this).data("type");
+    modesEl.addEventListener("click", function (e) {
+        if (!e.target.classList || !e.target.classList.contains("embed-mode")) return;
+        var mode = e.target.getAttribute("data-type");
+        currentMode = mode;
         currentFoodItem = null;
-        $recipe.prop("hidden", true);
+        recipeEl.hidden = true;
         if (isPlaying) {
             clearTimeout(spinTimeout);
             isPlaying = false;
         }
-        $start.text("开始");
-        $food.text("点开始，帮你决定！");
+        startEl.textContent = "开始";
+        foodEl.textContent = "点开始，帮你决定！";
+        var kids = modesEl.children;
+        for (var i = 0; i < kids.length; i++) {
+            kids[i].classList.toggle("selected", kids[i] === e.target);
+        }
     });
 
-    $food.text("点开始，帮你决定！");
+    foodEl.textContent = "点开始，帮你决定！";
 })();
