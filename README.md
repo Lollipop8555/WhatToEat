@@ -64,13 +64,7 @@ node scripts/genHumanData.js   # 重新生成 foodData/human.json
 ```
 
 ## 来源
-源码来源：https://cuijiahua.com/eat/
 
-### 新增内容
-- 整理原网站压混内容，模块化代码
-- 优化 CSS，添加 PWA 支持
-- 接入 HowToCook 菜谱库，支持「查看菜谱」整页 Markdown 展示
-- 三套菜单扁平混排
-
-## 其他
-> 本项目仅供交流学习使用
+- https://cuijiahua.com/eat/
+- https://github.com/MskTmi/WhatToEat
+- https://github.com/Anduin2017/HowToCook

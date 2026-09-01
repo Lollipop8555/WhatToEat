@@ -1,3 +1,7 @@
+:root {
+    --s: 1
+}
+
 * {
     box-sizing: border-box
 }
@@ -5,18 +9,51 @@
 html,
 body {
     margin: 0;
-    padding: 0
+    padding: 0;
+    height: 100%
 }
 
-/* 透明背景，随外部页面样式自适应（不做卡片） */
+/* 与 index 一致的滚动背景图 */
+.embed-bg {
+    background: #E9E9E9 url(../images/bg.jpg) 50% 0;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    -webkit-animation: embedFlow 16s linear infinite;
+    animation: embedFlow 16s linear infinite;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1
+}
+
+@-webkit-keyframes embedFlow {
+    0% {
+        background-position: 50% 0
+    }
+
+    100% {
+        background-position: 50% -250px
+    }
+}
+
+@keyframes embedFlow {
+    0% {
+        background-position: 50% 0
+    }
+
+    100% {
+        background-position: 50% -250px
+    }
+}
+
+/* 高度自适应：内容在 iframe 内垂直居中，超出则滚动 */
 body.embed-page {
     font-family: sans-serif;
-    background: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100%;
-    padding: 16px;
+    background: #E9E9E9;
+    overflow-y: auto;
+    padding: calc(8px * var(--s));
     -webkit-user-select: none;
     user-select: none
 }
@@ -24,50 +61,63 @@ body.embed-page {
 .embed-widget {
     width: 100%;
     max-width: 640px;
+    min-height: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
     text-align: center
 }
 
 .embed-title {
-    margin: 0 0 30px;
+    margin: 0 0 calc(8px * var(--s));
     font-weight: 400;
-    font-size: 32px;
+    font-size: calc(20px * var(--s));
     color: #333;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis
 }
 
+/* 主区占满剩余高度并垂直居中：结果提示区在按钮正上方 */
+.embed-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: calc(12px * var(--s));
+    min-height: 0
+}
+
 .embed-display {
-    min-height: 60px;
-    margin-bottom: 28px;
+    min-height: calc(32px * var(--s));
     display: flex;
     align-items: center;
     justify-content: center
 }
 
 .embed-food {
-    font-size: 34px;
+    font-size: calc(24px * var(--s));
     font-weight: 700;
     color: #111;
-    line-height: 1.25;
+    line-height: 1.2;
     word-break: break-all
 }
 
-/* 与首页 #start 一致的橙色大按钮（宽度自适应 iframe） */
 .embed-btn {
     display: inline-block;
     cursor: pointer;
-    border-radius: 35px;
-    width: 100%;
-    max-width: 220px;
-    height: 60px;
-    line-height: 60px;
-    padding: 0 16px;
+    border-radius: calc(26px * var(--s));
+    width: calc(200px * var(--s));
+    max-width: 92%;
+    height: calc(46px * var(--s));
+    line-height: calc(44px * var(--s));
+    padding: 0 calc(14px * var(--s));
     color: #fff;
     text-align: center;
-    font-size: 28px;
+    font-size: calc(20px * var(--s));
     font-family: inherit;
-    border: 1px solid #E88E1D;
+    border: calc(1px * var(--s)) solid #E88E1D;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     background: -webkit-linear-gradient(top, #FFBA30, #FF911E);
     background: linear-gradient(to bottom, #FFBA30, #FF911E);
@@ -80,18 +130,16 @@ body.embed-page {
 }
 
 .embed-recipe {
-    margin-top: 22px;
     min-height: 0
 }
 
-/* 与首页 #recipeBtn 一致的橙色胶囊 */
 .embed-recipe-link {
     display: inline-block;
-    padding: 8px 22px;
+    padding: calc(6px * var(--s)) calc(18px * var(--s));
     border: 0;
-    border-radius: 22px;
+    border-radius: calc(20px * var(--s));
     color: #fff;
-    font-size: 18px;
+    font-size: calc(15px * var(--s));
     text-decoration: none;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     background: -webkit-linear-gradient(top, #FFBA30, #FF911E);
@@ -104,26 +152,27 @@ body.embed-page {
     background: linear-gradient(to bottom, #FFCE44, #FFA532)
 }
 
-/* 与首页 #toggle 一致的底部模式切换条 */
+/* 三个 TAB 钉在底部 */
 .embed-modes {
-    margin-top: 36px;
+    margin-top: calc(10px * var(--s));
     display: inline-grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    gap: 5px;
+    grid-template-columns: repeat(auto-fit, minmax(calc(72px * var(--s)), 1fr));
+    gap: calc(5px * var(--s));
     width: 90%;
-    max-width: 260px;
-    padding: 2px;
-    border-radius: 20px;
+    max-width: calc(260px * var(--s));
+    padding: calc(2px * var(--s));
+    border-radius: calc(20px * var(--s));
     background: rgba(255, 255, 255, 0.6);
-    font-size: 12px
+    font-size: calc(12px * var(--s));
+    align-self: center
 }
 
 .embed-mode {
-    padding: 5px 10px;
+    padding: calc(5px * var(--s)) calc(8px * var(--s));
     text-align: center;
     cursor: pointer;
     line-height: 1.5;
-    border-radius: 20px;
+    border-radius: calc(20px * var(--s));
     color: #999;
     transition: 0.3s
 }
