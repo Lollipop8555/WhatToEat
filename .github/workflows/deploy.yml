@@ -28,6 +28,9 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          # 仓库尚未开启 Pages 时，自动启用（避免 GET Pages site 返回 404）
+          enablement: true
 
       # 本项目是纯静态站点，无需构建，直接把整个仓库作为产物上传
       - name: Upload artifact
