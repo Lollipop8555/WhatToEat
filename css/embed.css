@@ -174,7 +174,8 @@ body.embed-page {
     line-height: 1.5;
     border-radius: calc(20px * var(--s));
     color: #999;
-    transition: 0.3s
+    transition: 0.3s;
+    white-space: nowrap;
 }
 
 .embed-mode.selected {

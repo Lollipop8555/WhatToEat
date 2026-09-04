@@ -203,6 +203,7 @@ body {
     border-radius: 20px;
     position: relative;
     z-index: 2;
+    white-space: nowrap;
 }
 
 #toggle span.selected {

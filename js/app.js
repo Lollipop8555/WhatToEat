@@ -58,7 +58,7 @@ $(document).ready(function () {
             // 显示随机到的食物
             $(".punctuation").text("！");
             $("#start").find("span").text("换一个");
-            document.title = "Mst | " + $(".title").text();
+            document.title = "今天吃什么 | " + $(".title").text();
 
             // 停止后按需显示「查看菜谱」按钮
             updateRecipeButton();
@@ -232,7 +232,7 @@ function updateRecipeButton() {
 }
 
 // 全部菜谱列表
-const RECIPE_MODE_LABELS = { human: "正常人类", monster: "非正常人类", oasis: "oasis" };
+const RECIPE_MODE_LABELS = { human: "人类", monster: "非人类", oasis: "Oasis" };
 const RECIPE_MODES = ["human", "monster", "oasis"];
 let allRecipesLoaded = false;
 let allRecipesCache = [];
