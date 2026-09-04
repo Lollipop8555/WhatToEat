@@ -57,6 +57,20 @@ cd ..
 docker compose up -d     # 在 whattoeat/ 目录执行，重启容器
 ```
 
+## 部署到 GitHub Pages
+
+本项目是纯静态站点，已做好 GitHub Pages 适配，可直接托管：
+
+1. **`.nojekyll`**：已禁用 Jekyll，确保 `howToCook/` 下的 `.md` 文件以**原始文本**提供（菜谱页用 `fetch().text()` 直接读取），且不会因 Jekyll 处理 `_` 目录而漏文件。
+2. **相对路径**：所有资源均用 `./css/`、`./js/`、`./foodData/`、`./howToCook/` 等相对路径，因此既支持 `https://<user>.github.io/<repo>/` 这种**子路径**，也支持自定义域名。
+3. **自动部署**：推送 `main` 分支后，`.github/workflows/deploy.yml` 会用 GitHub Actions 自动部署。
+
+部署步骤：
+- 在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。
+- 把代码推到 `main` 分支，Action 会自动构建并发布。
+
+> 不使用 Actions 也可：Settings → Pages → Source 选 **Deploy from a branch** → 选 `main` / `/root`，`.nojekyll` 同样会让 GitHub 跳过 Jekyll 构建。
+
 ## 更新 HowToCook 菜谱后重建索引
 `human.json` 是菜谱的索引快照。如果在 `howToCook/` 中新增 / 删除菜谱，需重新生成索引，否则新菜不会进入随机池：
 ```bash
@@ -65,6 +79,6 @@ node scripts/genHumanData.js   # 重新生成 foodData/human.json
 
 ## 来源
 
-- https://cuijiahua.com/eat/
-- https://github.com/MskTmi/WhatToEat
-- https://github.com/Anduin2017/HowToCook
+- https://cuijiahua.com/eat/ —— 灵感来源
+- https://github.com/MskTmi/WhatToEat —— 代码框架，MIT License
+- https://github.com/Anduin2017/HowToCook —— 菜谱数据，The Unlicense（公有领域）

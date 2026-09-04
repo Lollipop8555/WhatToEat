@@ -1,6 +1,7 @@
 MIT License
 
 Copyright (c) 2023 MskTmi
+Copyright (c) 2026 Lollipop8555
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +20,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+本仓库由以下来源合并而成：
+
+- 代码框架来自 **MskTmi/WhatToEat**，采用 MIT License（Copyright (c) 2023 MskTmi）。
+- 菜谱数据（`howToCook/`）来自 **Anduin2017/HowToCook**，采用 The Unlicense（公有领域奉献）。
+- 灵感来源：https://cuijiahua.com/eat/
